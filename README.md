@@ -1,7 +1,7 @@
 # gamification-status
 
 Página pública de status da dalego (status.dalego.com). HTML sem build, em `public/`, servida pelo
-Cloudflare como Worker só com assets (`wrangler.jsonc`): push na `main` publica.
+Cloudflare Pages (gamification-status.pages.dev; a pasta vem do `wrangler.jsonc`): push na `main` publica.
 
 Lê o estado de https://dalego.betteruptime.com/index.json (página 269058 do Better Stack) a cada minuto.
 A página mostra API, Painel e Site. O Webinar tem monitor no Better Stack, mas fica fora da página.

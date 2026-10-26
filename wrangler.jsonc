@@ -1,6 +1,6 @@
-// Página estática servida como Worker com assets (sem código). O deploy é o "npx wrangler deploy" do Cloudflare.
+// Projeto do Cloudflare Pages: HTML sem build, publicado direto de public/.
 {
   "name": "gamification-status",
   "compatibility_date": "2026-10-01",
-  "assets": { "directory": "public" }
+  "pages_build_output_dir": "public"
 }
