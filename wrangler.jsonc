@@ -1,0 +1,6 @@
+// Página estática servida como Worker com assets (sem código). O deploy é o "npx wrangler deploy" do Cloudflare.
+{
+  "name": "gamification-status",
+  "compatibility_date": "2026-10-01",
+  "assets": { "directory": "public" }
+}
