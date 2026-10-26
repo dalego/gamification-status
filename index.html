@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Status da dalego</title>
+<meta name="description" content="Como estão os serviços da dalego agora e nos últimos 90 dias.">
+<link rel="icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f8fb;
+    --card: #ffffff;
+    --texto: #1b2430;
+    --suave: #64707d;
+    --linha: #e4e9ef;
+    --marca: #0088cc;
+    --ok: #1f9d55;
+    --instavel: #e8a317;
+    --fora: #d33235;
+    --manutencao: #3b82f6;
+    --sem: #dde3ea;
+    --sombra: 0 1px 2px rgba(27, 36, 48, .04), 0 8px 24px rgba(27, 36, 48, .06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10161d;
+      --card: #18212b;
+      --texto: #eef2f6;
+      --suave: #96a3b1;
+      --linha: #26313d;
+      --marca: #33a8e0;
+      --sem: #2c3743;
+      --sombra: none;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--texto);
+    font-family: Poppins, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 40px 16px 48px; }
+  header { text-align: center; }
+  header img { height: 36px; width: auto; display: block; margin: 0 auto; }
+  header p { margin: 10px 0 0; color: var(--suave); font-size: 15px; }
+
+  .geral { text-align: center; margin: 44px 0 32px; }
+  .selo {
+    width: 64px; height: 64px; border-radius: 50%;
+    display: grid; place-items: center; margin: 0 auto 18px;
+    color: #fff; background: var(--sem);
+  }
+  .selo svg { width: 30px; height: 30px; }
+  .geral h1 {
+    font-family: Poppins, sans-serif; font-weight: 600;
+    font-size: clamp(24px, 5vw, 32px); margin: 0; letter-spacing: -.01em;
+  }
+  .geral p { margin: 8px 0 0; color: var(--suave); font-size: 14px; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--linha);
+    border-radius: 16px; box-shadow: var(--sombra); overflow: hidden;
+  }
+  .servico { padding: 18px 20px; }
+  .servico + .servico { border-top: 1px solid var(--linha); }
+  .topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .nome { font-weight: 600; font-size: 16px; }
+  .estado { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .estado::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .barras { display: flex; gap: 2px; height: 34px; margin: 14px 0 8px; }
+  .barras span { flex: 1; border-radius: 3px; background: var(--sem); position: relative; }
+  .barras span:hover { opacity: .75; }
+  .rodape { display: flex; justify-content: space-between; color: var(--suave); font-size: 12px; }
+
+  .ok { color: var(--ok); }  .b-ok { background: var(--ok) !important; }
+  .instavel { color: var(--instavel); }  .b-instavel { background: var(--instavel) !important; }
+  .fora { color: var(--fora); }  .b-fora { background: var(--fora) !important; }
+  .manutencao { color: var(--manutencao); }  .b-manutencao { background: var(--manutencao) !important; }
+
+  .dica {
+    position: fixed; z-index: 10; pointer-events: none;
+    background: var(--texto); color: var(--bg);
+    font-size: 12px; line-height: 1.4; padding: 6px 10px; border-radius: 8px;
+    transform: translate(-50%, calc(-100% - 10px)); white-space: nowrap; display: none;
+  }
+  .aviso {
+    border: 1.5px dashed var(--linha); border-radius: 16px; padding: 28px 20px;
+    text-align: center; color: var(--suave);
+  }
+  footer { text-align: center; margin-top: 32px; font-size: 13px; color: var(--suave); }
+  footer a { color: var(--marca); text-decoration: none; font-weight: 500; }
+
+  @media (max-width: 560px) {
+    main { padding-top: 32px; }
+    header img { height: 30px; }
+    .geral { margin: 36px 0 24px; }
+    .servico { padding: 16px; }
+    .barras { gap: 2px; height: 30px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <picture>
+      <source srcset="logo-branco.svg" media="(prefers-color-scheme: dark)">
+      <img src="logo.svg" alt="dalego" width="127" height="36">
+    </picture>
+    <p>Status dos serviços</p>
+  </header>
+
+  <section class="geral" aria-live="polite">
+    <div class="selo" id="selo"></div>
+    <h1 id="titulo">Carregando…</h1>
+    <p id="atualizado"></p>
+  </section>
+
+  <section id="lista"></section>
+
+  <footer>
+    <a href="https://dalego.com">dalego.com</a>
+  </footer>
+</main>
+<div class="dica" id="dica"></div>
+
+<script>
+  const FONTE = 'https://dalego.betteruptime.com/index.json';
+  const DIA = 86400;
+
+  const ESTADOS = {
+    operational: { classe: 'ok', texto: 'Funcionando' },
+    degraded: { classe: 'instavel', texto: 'Instável' },
+    downtime: { classe: 'fora', texto: 'Fora do ar' },
+    maintenance: { classe: 'manutencao', texto: 'Em manutenção' },
+  };
+  const GERAL = {
+    operational: 'Tudo funcionando',
+    degraded: 'Alguns serviços estão instáveis',
+    downtime: 'Alguns serviços estão fora do ar',
+    maintenance: 'Manutenção em andamento',
+  };
+  const ICONES = {
+    ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    instavel: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 7v6"/><path d="M12 17.5v.01"/></svg>',
+    fora: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 12h10"/></svg>',
+    manutencao: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5l-2.5 2.5-2.5-.5-.5-2.5z"/></svg>',
+  };
+
+  const diasNaTela = () => (window.innerWidth <= 560 ? 30 : 90);
+  let dados = null;
+
+  function porcento(n) {
+    return n.toLocaleString('pt-BR', { minimumFractionDigits: n === 100 ? 0 : 2, maximumFractionDigits: 2 }) + '%';
+  }
+  function dataCurta(iso) {
+    const [a, m, d] = iso.split('-');
+    return `${d}/${m}/${a}`;
+  }
+  function duracao(seg) {
+    const min = Math.round(seg / 60);
+    if (min < 60) return `${min} min fora do ar`;
+    const h = Math.floor(min / 60), r = min % 60;
+    return `${h} h${r ? ' ' + r + ' min' : ''} fora do ar`;
+  }
+  function classeDoDia(d) {
+    if (d.status === 'not_monitored') return '';
+    if (d.status === 'maintenance' || d.maintenance_duration > 0) return 'b-manutencao';
+    if (d.downtime_duration >= 30 * 60) return 'b-fora';
+    if (d.downtime_duration > 0 || d.status === 'degraded') return 'b-instavel';
+    return 'b-ok';
+  }
+  function textoDoDia(d) {
+    if (d.status === 'not_monitored') return 'Sem dados';
+    if (d.downtime_duration > 0) return duracao(d.downtime_duration);
+    if (d.maintenance_duration > 0) return 'Manutenção';
+    return 'Funcionou o dia todo';
+  }
+  function noAr(hist) {
+    const medidos = hist.filter((d) => d.status !== 'not_monitored');
+    if (!medidos.length) return null;
+    const fora = medidos.reduce((s, d) => s + d.downtime_duration, 0);
+    return Math.max(0, 100 * (1 - fora / (medidos.length * DIA)));
+  }
+
+  function desenhar() {
+    if (!dados) return;
+    const pagina = dados.data.attributes;
+    const servicos = dados.included
+      .filter((i) => i.type === 'status_page_resource')
+      .map((i) => i.attributes)
+      .sort((a, b) => a.position - b.position);
+
+    const geral = ESTADOS[pagina.aggregate_state] ? pagina.aggregate_state : 'operational';
+    const selo = document.getElementById('selo');
+    selo.className = 'selo b-' + ESTADOS[geral].classe;
+    selo.innerHTML = ICONES[ESTADOS[geral].classe];
+    document.getElementById('titulo').textContent = GERAL[geral];
+    const agora = new Date();
+    document.getElementById('atualizado').textContent =
+      'Atualizado às ' + agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) +
+      ' de ' + agora.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+
+    const n = diasNaTela();
+    const lista = document.getElementById('lista');
+    lista.className = 'card';
+    lista.innerHTML = servicos.map((s) => {
+      const e = ESTADOS[s.status] || ESTADOS.operational;
+      const hist = s.status_history.slice(-n);
+      const pct = noAr(hist);
+      const barras = hist.map((d) =>
+        `<span class="${classeDoDia(d)}" data-dia="${dataCurta(d.day)}" data-texto="${textoDoDia(d)}"></span>`
+      ).join('');
+      return `<div class="servico">
+        <div class="topo"><span class="nome">${s.public_name}</span><span class="estado ${e.classe}">${e.texto}</span></div>
+        <div class="barras">${barras}</div>
+        <div class="rodape"><span>${n} dias atrás</span><span>${pct === null ? '' : porcento(pct) + ' no ar'}</span><span>Hoje</span></div>
+      </div>`;
+    }).join('');
+  }
+
+  function falhou() {
+    if (dados) return;
+    document.getElementById('titulo').textContent = 'Não conseguimos carregar o status';
+    document.getElementById('atualizado').textContent = 'Tentando de novo em 1 minuto.';
+    const lista = document.getElementById('lista');
+    lista.className = 'aviso';
+    lista.textContent = 'Sem dados por enquanto.';
+  }
+
+  async function carregar() {
+    try {
+      const r = await fetch(FONTE, { cache: 'no-store' });
+      if (!r.ok) throw new Error(r.status);
+      dados = await r.json();
+      desenhar();
+    } catch (e) {
+      falhou();
+    }
+  }
+
+  const dica = document.getElementById('dica');
+  document.addEventListener('pointerover', (ev) => {
+    const b = ev.target.closest('.barras span');
+    if (!b) { dica.style.display = 'none'; return; }
+    const r = b.getBoundingClientRect();
+    dica.innerHTML = `<strong>${b.dataset.dia}</strong><br>${b.dataset.texto}`;
+    dica.style.left = Math.min(Math.max(r.left + r.width / 2, 80), window.innerWidth - 80) + 'px';
+    dica.style.top = r.top + 'px';
+    dica.style.display = 'block';
+  });
+  document.addEventListener('scroll', () => (dica.style.display = 'none'), { passive: true });
+
+  let ultimaLargura = diasNaTela();
+  window.addEventListener('resize', () => {
+    if (diasNaTela() !== ultimaLargura) { ultimaLargura = diasNaTela(); desenhar(); }
+  });
+
+  carregar();
+  setInterval(carregar, 60 * 1000);
+</script>
+</body>
+</html>
